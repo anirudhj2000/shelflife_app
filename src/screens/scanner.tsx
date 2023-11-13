@@ -13,10 +13,13 @@ import {
   CameraDevice,
   useCodeScanner,
 } from 'react-native-vision-camera';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {AppStackProps} from '../utils/types';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 
 const {height, width} = Dimensions.get('window');
 const semiTransparent = '#00000088';
-const ScannerSceen = () => {
+const ScannerSceen = ({navigation}: AppStackProps) => {
   const device = useCameraDevice('back');
 
   const {hasPermission, requestPermission} = useCameraPermission();
@@ -29,6 +32,7 @@ const ScannerSceen = () => {
     codeTypes: ['qr', 'ean-13'],
     onCodeScanned: codes => {
       console.log(`Scanne${codes.length} codes!`, codes);
+      navigation.goBack();
     },
   });
 
@@ -53,6 +57,7 @@ const ScannerSceen = () => {
         isActive={true}
         codeScanner={codeScanner}
       />
+
       <View
         style={{
           height: '100%',
@@ -68,8 +73,36 @@ const ScannerSceen = () => {
             display: 'flex',
             flexDirection: 'column',
           }}>
-            
+          <View
+            style={{
+              height: height * 0.075,
+              backgroundColor: '#00000099',
+              width: '100%',
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              paddingHorizontal: '2.5%',
+            }}>
+            <View
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}>
+              <TouchableOpacity onPress={() => navigation.goBack()}>
+                <AntDesign name="left" size={24} color="#fff" />
+              </TouchableOpacity>
+              <Text
+                style={{
+                  marginHorizontal: '5%',
+                  fontSize: 24,
+                }}>
+                Scan products
+              </Text>
+            </View>
           </View>
+        </View>
         {/* center panel */}
         <View
           style={{display: 'flex', flexDirection: 'row', height: height * 0.2}}>
@@ -109,10 +142,16 @@ const ScannerSceen = () => {
               display: 'flex',
               flexDirection: 'row',
               backgroundColor: '#fff',
-              height: height * 0.1,
-              width: '80%',
+              paddingVertical: '2.5%',
+              justifyContent: 'center',
+              alignItems: 'center',
+              paddingHorizontal: '7.5%',
+              borderRadius: 64,
             }}>
-            <Text style={{color: '#000'}}>Add Manually</Text>
+            <Icon name="plus-circle-outline" size={24} color="#000" />
+            <Text style={{color: '#000', marginLeft: '2.5%', fontSize: 18}}>
+              Add Item Manually
+            </Text>
           </TouchableOpacity>
         </View>
       </View>

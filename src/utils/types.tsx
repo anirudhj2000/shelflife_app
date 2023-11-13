@@ -5,8 +5,4 @@ export type AppStackParams = {
   Scanner: undefined;
 };
 
-export type AppStackProps = NativeStackScreenProps<
-  AppStackParams,
-  'Home',
-  'Scanner'
->;
+export type AppStackProps = NativeStackScreenProps<AppStackParams>;
