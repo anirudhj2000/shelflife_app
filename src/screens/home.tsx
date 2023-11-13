@@ -12,6 +12,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {AppStackProps} from '../utils/types';
 import StatsCard from '../components/totalStatsCard';
 import UpcomingCard from '../components/upcomingCard';
+import CategoryCard from '../components/categoryCard';
 
 const {height, width} = Dimensions.get('window');
 
@@ -61,6 +62,7 @@ const Home = ({navigation}: AppStackProps) => {
           }}>
           <StatsCard total={100} upcoming={30} />
           <UpcomingCard />
+          <CategoryCard />
         </View>
       </ScrollView>
       <View
