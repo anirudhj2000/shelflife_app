@@ -1,17 +1,17 @@
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Home from '../screens/home';
 import ScannerSceen from '../screens/scanner';
 import {AppStackParams} from './types';
 
-const BottomTabs = createBottomTabNavigator<AppStackParams>();
+const AppStack = createNativeStackNavigator<AppStackParams>();
 
-const BottomTabNavigator = () => {
+const AppStackNavigator = () => {
   return (
-    <BottomTabs.Navigator screenOptions={{headerShown: false}}>
-      <BottomTabs.Screen name="Home" component={Home} />
-      <BottomTabs.Screen name="Scanner" component={ScannerSceen} />
-    </BottomTabs.Navigator>
+    <AppStack.Navigator screenOptions={{headerShown: false}}>
+      <AppStack.Screen name="Home" component={Home} />
+      <AppStack.Screen name="Scanner" component={ScannerSceen} />
+    </AppStack.Navigator>
   );
 };
 
-export default BottomTabNavigator;
+export default AppStackNavigator;
