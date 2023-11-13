@@ -13,7 +13,7 @@ const UpcomingCard = () => {
         borderWidth: 1,
         borderColor: '#000',
         marginHorizontal: '2.5%',
-        marginVertical: '5%',
+        marginVertical: '2.5%',
         display: 'flex',
         flexDirection: 'column',
         paddingHorizontal: '2.5%',

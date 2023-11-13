@@ -8,7 +8,7 @@ const ProductCard = () => {
   return (
     <View
       style={{
-        marginBottom: '2.5%',
+        marginTop: '2.5%',
         paddingVertical: '2.5%',
         borderBottomWidth: 0.5,
         borderColor: '#c7c7c7',
@@ -75,8 +75,12 @@ const ProductCard = () => {
           flexDirection: 'column',
           borderWidth: 1,
         }}>
-        <Text style={{color: '#fff', fontSize: 16}}>24</Text>
-        <Text style={{color: '#fff', fontSize: 12}}>Days</Text>
+        <Text style={{color: '#000', fontSize: 16, fontWeight: 'bold'}}>
+          24
+        </Text>
+        <Text style={{color: '#000', fontSize: 12, fontWeight: 'bold'}}>
+          Days
+        </Text>
       </View>
     </View>
   );
