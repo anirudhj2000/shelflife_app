@@ -17,12 +17,12 @@ import {
   View,
 } from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
-import BottomTabNavigator from './src/utils/navigation';
+import AppStackNavigator from './src/utils/navigation';
 
 function App(): JSX.Element {
   return (
     <NavigationContainer>
-      <BottomTabNavigator />
+      <AppStackNavigator />
     </NavigationContainer>
   );
 }
