@@ -5,7 +5,7 @@
  * @format
  */
 
-import React from 'react';
+import React, {useEffect} from 'react';
 import type {PropsWithChildren} from 'react';
 import {
   SafeAreaView,
@@ -17,12 +17,25 @@ import {
   View,
 } from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
-import AppStackNavigator from './src/utils/navigation';
+import {AuthStackNavigator, AppStackNavigator} from './src/utils/navigation';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import 'react-native-gesture-handler';
 
 function App(): JSX.Element {
+  const [user, setUser] = React.useState<string | null>(null);
+
+  useEffect(() => {
+    fetchInfo();
+  }, []);
+
+  const fetchInfo = async () => {
+    let data = await AsyncStorage.getItem('user');
+    setUser(data);
+  };
+
   return (
     <NavigationContainer>
-      <AppStackNavigator />
+      {user ? <AppStackNavigator /> : <AuthStackNavigator />}
     </NavigationContainer>
   );
 }
