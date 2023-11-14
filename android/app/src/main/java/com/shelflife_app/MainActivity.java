@@ -1,4 +1,4 @@
-package com.shelflife_app;
+package com.shelflife.app;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
