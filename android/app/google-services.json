@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "439331411954",
+    "project_id": "shelfage-8d685",
+    "storage_bucket": "shelfage-8d685.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:439331411954:android:d0baae25a2ba655b2e7d6b",
+        "android_client_info": {
+          "package_name": "com.shelflife.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "439331411954-e662pnnf9cn71u3c3frot91fn3ff50kt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.shelflife.app",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "439331411954-0sihu46bdd7508j7shfi01f1853hatkj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBeN9kt3s1gLfurMGGe09V09Wrxl5_553M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "439331411954-0sihu46bdd7508j7shfi01f1853hatkj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
