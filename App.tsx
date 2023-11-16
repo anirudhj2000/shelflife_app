@@ -17,7 +17,11 @@ import {
   View,
 } from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
-import {AuthStackNavigator, AppStackNavigator} from './src/utils/navigation';
+import {
+  AuthStackNavigator,
+  AppStackNavigator,
+  AppDrawerNavigator,
+} from './src/utils/navigation';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import 'react-native-gesture-handler';
 
@@ -35,7 +39,7 @@ function App(): JSX.Element {
 
   return (
     <NavigationContainer>
-      {user ? <AppStackNavigator /> : <AuthStackNavigator />}
+      {user ? <AppDrawerNavigator /> : <AuthStackNavigator />}
     </NavigationContainer>
   );
 }
