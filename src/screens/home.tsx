@@ -9,14 +9,15 @@ import {
 } from 'react-native';
 import React from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {AppStackProps} from '../utils/types';
+import {AppStackProps, AppDrawerProps} from '../utils/types';
 import StatsCard from '../components/totalStatsCard';
 import UpcomingCard from '../components/upcomingCard';
 import CategoryCard from '../components/categoryCard';
+import AppHeader from '../components/appHeader';
 
 const {height, width} = Dimensions.get('window');
 
-const Home = ({navigation}: AppStackProps) => {
+const Home = ({navigation}: AppDrawerProps) => {
   return (
     <View style={{flex: 1, backgroundColor: '#000'}}>
       <Image
@@ -28,25 +29,7 @@ const Home = ({navigation}: AppStackProps) => {
         }}
         source={require('../assets/appbackground.png')}
       />
-      <View
-        style={{
-          position: 'absolute',
-          top: 0,
-          width: '100%',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}>
-        <Text
-          style={{
-            color: '#ffff',
-            fontSize: 32,
-            fontWeight: 'bold',
-            marginTop: '5%',
-          }}>
-          BeforeExp
-        </Text>
-      </View>
+      <AppHeader navigation={navigation} />
       <ScrollView style={{height: height}}>
         <View
           style={{
