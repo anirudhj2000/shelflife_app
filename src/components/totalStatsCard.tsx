@@ -24,9 +24,15 @@ const StatsCard = ({total, upcoming}: StatusCardInterface) => {
         style={{display: 'flex', justifyContent: 'center', marginLeft: '5%'}}>
         <Icon name="skull-scan" size={30} color="#000" />
       </View>
-      <View style={{display: 'flex', flexDirection: 'column', padding: '5%'}}>
+      <View
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          padding: '5%',
+          width: '100%',
+        }}>
         <View style={{display: 'flex', flexDirection: 'row'}}>
-          <Text style={{color: '#000', fontWeight: 'bold', fontSize: 18}}>
+          <Text style={{color: '#000', fontWeight: 'bold', fontSize: 16}}>
             {upcoming} of your products are expiring soon...
           </Text>
         </View>
