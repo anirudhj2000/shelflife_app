@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -6,10 +6,10 @@ import {
   TouchableOpacity,
   Dimensions,
   Alert,
+  Linking,
 } from 'react-native';
 import {AuthStackProps} from '../utils/types';
-import Animated from 'react-native-reanimated';
-import {
+import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withTiming,
@@ -25,6 +25,7 @@ import auth from '@react-native-firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Eye from '../components/eye';
 import LoginForm from '../components/loginForm';
+import SignupModal from '../components/signupModal';
 
 const {height, width} = Dimensions.get('window');
 export const qrFont = 'LibreBarcode128Text-Regular';
@@ -37,6 +38,7 @@ GoogleSignin.configure({
 const Login = ({navigation}: AuthStackProps) => {
   const translateValue = useSharedValue(500);
   const qrCodePos = useSharedValue(-width * 0.25);
+  const [showModal, setShowModal] = useState(false);
 
   const animatedStyles = useAnimatedStyle(() => ({
     transform: [
@@ -71,11 +73,16 @@ const Login = ({navigation}: AuthStackProps) => {
   }, []);
 
   const HandleSignIn = () => {
-    onGoogleButtonPress().then(res => {
-      Alert.alert('Login Successfull');
-      AsyncStorage.setItem('user', JSON.stringify(res));
-      navigation.navigate('Home');
-    });
+    onGoogleButtonPress()
+      .then(res => {
+        Alert.alert('Login Successfull');
+        AsyncStorage.setItem('user', JSON.stringify(res));
+        navigation.navigate('App', {screen: 'Home'});
+      })
+      .catch(err => {
+        console.log('login err', err);
+        AsyncStorage.clear();
+      });
   };
 
   async function onGoogleButtonPress() {
@@ -165,7 +172,11 @@ const Login = ({navigation}: AuthStackProps) => {
             </Text>
           </View>
           <View style={{display: 'flex', flexDirection: 'column'}}>
-            <View
+            <TouchableOpacity
+              onPress={() => {
+                HandleSignIn();
+                console.log('clicked');
+              }}
               style={{
                 backgroundColor: '#000',
                 padding: '2.5%',
@@ -188,7 +199,7 @@ const Login = ({navigation}: AuthStackProps) => {
               <Text style={{color: '#fff', fontSize: 14, fontWeight: 'bold'}}>
                 Login with Google
               </Text>
-            </View>
+            </TouchableOpacity>
             <View
               style={{
                 display: 'flex',
@@ -219,10 +230,20 @@ const Login = ({navigation}: AuthStackProps) => {
                 }}
               />
             </View>
-            <LoginForm />
+            <LoginForm
+              onPressSignup={() => {
+                setShowModal(true);
+              }}
+            />
           </View>
         </Animated.View>
       </View>
+      <SignupModal
+        modalVisible={showModal}
+        handleModalClose={() => {
+          setShowModal(false);
+        }}
+      />
     </View>
   );
 };

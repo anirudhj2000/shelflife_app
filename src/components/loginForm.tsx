@@ -5,10 +5,18 @@ import {
   TextInput,
   Button,
   TouchableOpacity,
+  Linking,
 } from 'react-native';
 import React, {useState} from 'react';
+import {useNavigation} from '@react-navigation/native';
+import {AuthStackProps} from '../utils/types';
 
-const LoginForm = () => {
+interface LoginFormInterface {
+  onPressSignup: () => void;
+}
+
+const LoginForm = ({onPressSignup}: LoginFormInterface) => {
+  const navigation = useNavigation<AuthStackProps>();
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [usernameError, setUsernameError] = useState<string | null>(null);
@@ -18,7 +26,7 @@ const LoginForm = () => {
     let isValid = true;
 
     if (!username) {
-      setUsernameError('Username is required.');
+      setUsernameError('Email is required.');
       isValid = false;
     } else {
       setUsernameError(null);
@@ -39,9 +47,9 @@ const LoginForm = () => {
   };
 
   return (
-    <View style={{display: 'flex', flexDirection: 'column'}}>
+    <View style={{display: 'flex', flexDirection: 'column', zIndex: 2}}>
       <TextInput
-        placeholder="Username"
+        placeholder="Email"
         onChangeText={text => setUsername(text)}
         style={[styles.textContainer, {marginBottom: passwordError ? 0 : '5%'}]}
       />
@@ -71,6 +79,7 @@ const LoginForm = () => {
         </Text>
       </TouchableOpacity>
       <TouchableOpacity
+        onPress={onPressSignup}
         style={{
           display: 'flex',
           justifyContent: 'center',
@@ -86,7 +95,7 @@ const LoginForm = () => {
           Signup
         </Text>
       </TouchableOpacity>
-      <TouchableOpacity
+      <View
         style={{
           backgroundColor: '#fff',
           display: 'flex',
@@ -96,14 +105,28 @@ const LoginForm = () => {
           alignItems: 'center',
           marginTop: '5%',
         }}>
-        <Text style={{textDecorationLine: 'underline', color: '#000'}}>
-          Terms and Conditions
-        </Text>
-        <Text style={{color: '#000'}}> and </Text>
-        <Text style={{textDecorationLine: 'underline', color: '#000'}}>
-          Privacy Policy
-        </Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() =>
+            Linking.canOpenURL(
+              'https://www.termsandconditionsgenerator.com/live.php?token=l4gKaE1cDYxZaX83bKNnod3VmWZOuasq',
+            ).then(supports => {
+              if (supports)
+                Linking.openURL(
+                  'https://www.termsandconditionsgenerator.com/live.php?token=l4gKaE1cDYxZaX83bKNnod3VmWZOuasq',
+                );
+            })
+          }>
+          <Text style={{textDecorationLine: 'underline', color: '#000'}}>
+            Terms and Conditions
+          </Text>
+        </TouchableOpacity>
+        {/* <Text style={{color: '#000'}}> and </Text>
+        <TouchableOpacity onPress={() => Linking.canOpenURL('')}>
+          <Text style={{textDecorationLine: 'underline', color: '#000'}}>
+            Privacy Policy
+          </Text>
+        </TouchableOpacity> */}
+      </View>
     </View>
   );
 };
