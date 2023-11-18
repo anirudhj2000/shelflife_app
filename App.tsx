@@ -7,6 +7,7 @@
 
 import React, {useEffect} from 'react';
 import type {PropsWithChildren} from 'react';
+import 'react-native-gesture-handler';
 import {
   SafeAreaView,
   ScrollView,
@@ -23,7 +24,7 @@ import {
   AppDrawerNavigator,
 } from './src/utils/navigation';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import 'react-native-gesture-handler';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 function App(): JSX.Element {
   const [user, setUser] = React.useState<string | null>(null);
@@ -38,9 +39,11 @@ function App(): JSX.Element {
   };
 
   return (
-    <NavigationContainer>
-      {user ? <AppDrawerNavigator /> : <AuthStackNavigator />}
-    </NavigationContainer>
+    <GestureHandlerRootView style={{flex: 1}}>
+      <NavigationContainer>
+        {user ? <AppDrawerNavigator /> : <AuthStackNavigator />}
+      </NavigationContainer>
+    </GestureHandlerRootView>
   );
 }
 
