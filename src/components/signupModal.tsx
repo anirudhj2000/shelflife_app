@@ -29,6 +29,26 @@ interface ModalInterface {
   handleModalClose: () => void;
 }
 
+export const validateEmail = (email: string) => {
+  return String(email)
+    .toLowerCase()
+    .match(
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+    );
+};
+
+export const validatePassword = (password: string): boolean => {
+  // Password regex rules:
+  // At least 8 characters
+  // At least one uppercase letter
+  // At least one lowercase letter
+  // At least one number
+  // At least one special character
+  const passwordRegex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  return passwordRegex.test(password);
+};
+
 const SignupModal = ({modalVisible, handleModalClose}: ModalInterface) => {
   const [name, setName] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -37,7 +57,31 @@ const SignupModal = ({modalVisible, handleModalClose}: ModalInterface) => {
   const [usernameError, setUsernameError] = useState<string | null>(null);
   const [passwordError, setPasswordError] = useState<string | null>(null);
 
-  const onSubmit = () => {};
+  const onSubmit = () => {
+    if (name.length == 0) {
+      setUsernameError('Please Enter Name!');
+      return;
+    }
+
+    if (!validateEmail(email)) {
+      setUsernameError('Please Enter Valid Email!');
+      return;
+    }
+
+    if (!validatePassword(password)) {
+      setUsernameError(
+        'Please Enter Password that contains atleast 8 characters, 1 lowercase, 1 uppercase, 1 number, 1 special character!',
+      );
+      return;
+    }
+
+    if (password != passwordConfirm) {
+      setUsernameError('Please enter matching passwords!');
+      return;
+    }
+
+    setUsernameError(null);
+  };
 
   const pressed = useSharedValue(false);
   const offset = useSharedValue(0);
@@ -45,23 +89,25 @@ const SignupModal = ({modalVisible, handleModalClose}: ModalInterface) => {
   const pan = Gesture.Pan()
     .onBegin(event => {
       pressed.value = true;
-      console.log('event values start', event.translationY);
     })
     .onChange(event => {
       offset.value = event.translationY;
-      console.log('event values', event.translationY);
+      console.log(
+        'event values ma shit',
+        event.translationY,
+        Math.max(0, event.translationY),
+      );
     })
     .onFinalize(event => {
       pressed.value = false;
-      if (event.translationY > 300) {
-        console.log('event values', event.translationY);
+      if (event.translationY > 200) {
         runOnJS(handleModalClose)();
         offset.value = height * 0.6;
       }
     });
 
   const animatedStyles = useAnimatedStyle(() => ({
-    transform: [{translateY: offset.value}],
+    transform: [{translateY: Math.max(0, offset.value)}],
   }));
 
   return (
@@ -88,7 +134,7 @@ const SignupModal = ({modalVisible, handleModalClose}: ModalInterface) => {
                         width: '20%',
                         backgroundColor: '#666666',
                         borderRadius: 16,
-                        marginBottom: '2.5%',
+                        marginBottom: '1.5%',
                         zIndex: 5,
                       },
                     ]}></View>
@@ -123,12 +169,22 @@ const SignupModal = ({modalVisible, handleModalClose}: ModalInterface) => {
                   <TextInput
                     placeholder="Name"
                     onChangeText={text => setName(text)}
+                    placeholderTextColor={'#c7c7c7'}
                     style={[
                       styles.textContainer,
-                      {marginBottom: passwordError ? 0 : '5%'},
+                      //   {marginBottom: passwordError ? 0 : '5%'},
                     ]}
                   />
-                  {usernameError && <Text>{usernameError}</Text>}
+                  {/* {usernameError && (
+                    <Text
+                      style={{
+                        color: '#E50000',
+                        fontSize: 12,
+                        marginVertical: 4,
+                      }}>
+                      {usernameError}
+                    </Text>
+                  )} */}
                 </View>
                 <View style={{display: 'flex', flexDirection: 'column'}}>
                   <Text
@@ -145,10 +201,10 @@ const SignupModal = ({modalVisible, handleModalClose}: ModalInterface) => {
                     onChangeText={text => setEmail(text)}
                     style={[
                       styles.textContainer,
-                      {marginBottom: passwordError ? 0 : '5%'},
+                      //   {marginBottom: passwordError ? 0 : '5%'},
                     ]}
                   />
-                  {usernameError && <Text>{usernameError}</Text>}
+                  {/* {usernameError && <Text>{usernameError}</Text>} */}
                 </View>
                 <View style={{display: 'flex', flexDirection: 'column'}}>
                   <Text
@@ -166,16 +222,15 @@ const SignupModal = ({modalVisible, handleModalClose}: ModalInterface) => {
                     onChangeText={text => setPassword(text)}
                     style={[
                       styles.textContainer,
-                      {marginBottom: passwordError ? 0 : '5%'},
+                      //   {marginBottom: passwordError ? 0 : '5%'},
                     ]}
                   />
-                  {passwordError && <Text>{passwordError}</Text>}
+                  {/* {passwordError && <Text>{passwordError}</Text>} */}
                 </View>
                 <View style={{display: 'flex', flexDirection: 'column'}}>
                   <Text
                     style={{
                       marginHorizontal: 4,
-                      marginBottom: '1%',
                       fontSize: 14,
                       color: '#000',
                     }}>
@@ -187,10 +242,19 @@ const SignupModal = ({modalVisible, handleModalClose}: ModalInterface) => {
                     onChangeText={text => setPassword(text)}
                     style={[
                       styles.textContainer,
-                      {marginBottom: passwordError ? 0 : '5%'},
+                      {marginBottom: usernameError ? 0 : '5%'},
                     ]}
                   />
-                  {passwordError && <Text>{passwordError}</Text>}
+                  {usernameError && (
+                    <Text
+                      style={{
+                        color: '#E50000',
+                        fontSize: 12,
+                        marginTop: 8,
+                      }}>
+                      {usernameError}
+                    </Text>
+                  )}
                 </View>
               </View>
               <TouchableOpacity
@@ -203,7 +267,6 @@ const SignupModal = ({modalVisible, handleModalClose}: ModalInterface) => {
                   alignItems: 'center',
                   padding: '2.5%',
                   backgroundColor: '#000',
-                  marginVertical: '1.5%',
                   borderRadius: 8,
                 }}>
                 <Text style={{fontSize: 16, color: '#fff', fontWeight: 'bold'}}>
