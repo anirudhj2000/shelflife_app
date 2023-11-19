@@ -1,14 +1,17 @@
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import React from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {AppDrawerParams, AppStackParams, HomeScreenProps} from '../utils/types';
 import {DrawerNavigationProp} from '@react-navigation/drawer';
-import {AppDrawerParams, AppStackParams} from '../utils/types';
+import {useNavigation} from '@react-navigation/native';
+import {qrFont} from '../screens/login';
 
 interface AppHeaderInterface {
-  navigation: DrawerNavigationProp<AppStackParams>;
+  navigation: HomeScreenProps;
 }
 
-const AppHeader = ({navigation}: AppHeaderInterface) => {
+const AppHeader = () => {
+  const navigation = useNavigation<DrawerNavigationProp<AppStackParams>>();
   return (
     <View
       style={{
@@ -20,24 +23,33 @@ const AppHeader = ({navigation}: AppHeaderInterface) => {
         justifyContent: 'space-between',
         alignItems: 'center',
         marginTop: '2.5%',
-        zIndex: 10,
+        zIndex: 0,
       }}>
       <TouchableOpacity
         onPress={() => {
           navigation.openDrawer();
         }}
         style={{marginHorizontal: '1.5%'}}>
-        <Icon name="menu" size={30} color="#fff" />
+        <Icon name="menu" size={30} color="#000" />
       </TouchableOpacity>
-      <Text
+      <View
         style={{
-          color: '#ffff',
-          fontSize: 32,
-          fontWeight: 'bold',
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'center',
         }}>
-        BeforeExp
-      </Text>
-      <View style={{width: '5%'}} />
+        <Text
+          style={{
+            fontSize: 54,
+            color: '#000',
+            fontFamily: qrFont,
+            marginTop: '2.5%',
+            marginBottom: '5%',
+          }}>
+          ShelfLife
+        </Text>
+      </View>
+      <View style={{width: '10%'}} />
     </View>
   );
 };
