@@ -16,7 +16,9 @@ interface LoginFormInterface {
 }
 
 const LoginForm = ({onPressSignup}: LoginFormInterface) => {
-  const navigation = useNavigation<AuthStackProps>();
+  // need to figure out type for the useNavigation
+  const navigation = useNavigation<any>();
+
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [usernameError, setUsernameError] = useState<string | null>(null);
@@ -51,19 +53,30 @@ const LoginForm = ({onPressSignup}: LoginFormInterface) => {
       <TextInput
         placeholder="Email"
         onChangeText={text => setUsername(text)}
+        placeholderTextColor={'#c7c7c7'}
         style={[styles.textContainer, {marginBottom: passwordError ? 0 : '5%'}]}
       />
-      {usernameError && <Text>{usernameError}</Text>}
+      {usernameError && (
+        <Text style={{color: '#E50000', fontSize: 12, marginVertical: 4}}>
+          {usernameError}
+        </Text>
+      )}
       <TextInput
         placeholder="Password"
         secureTextEntry
+        placeholderTextColor={'#c7c7c7'}
         onChangeText={text => setPassword(text)}
         style={[styles.textContainer, {marginBottom: passwordError ? 0 : '5%'}]}
       />
-      {passwordError && <Text>{passwordError}</Text>}
+      {passwordError && (
+        <Text style={{color: '#E50000', fontSize: 12, marginVertical: 4}}>
+          {passwordError}
+        </Text>
+      )}
       <TouchableOpacity
         onPress={() => {
           onSubmit();
+          //   navigation.navigate('App', {screen: 'Home'});
         }}
         style={{
           display: 'flex',
@@ -103,7 +116,7 @@ const LoginForm = ({onPressSignup}: LoginFormInterface) => {
           width: '100%',
           justifyContent: 'center',
           alignItems: 'center',
-          marginTop: '5%',
+          marginTop: '2.5%',
         }}>
         <TouchableOpacity
           onPress={() =>
