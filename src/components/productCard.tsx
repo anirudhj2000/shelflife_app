@@ -1,48 +1,78 @@
-import {View, Dimensions, TouchableOpacity, Text} from 'react-native';
+import {View, Dimensions, TouchableOpacity, Text, Image} from 'react-native';
 import React from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome6';
+import dayjs from 'dayjs';
 
 const {height, width} = Dimensions.get('window');
 
-const ProductCard = () => {
+interface ProductCardInfo {
+  onPress: () => void;
+  title: string;
+  productCode: string;
+  date: Date;
+  image: string;
+}
+
+const ProductCard = ({
+  onPress,
+  title,
+  productCode,
+  date,
+  image,
+}: ProductCardInfo) => {
+  console.log('date', date);
   return (
     <View
       style={{
-        marginTop: '2.5%',
-        paddingVertical: '2.5%',
-        borderBottomWidth: 0.5,
+        borderWidth: 1,
         borderColor: '#c7c7c7',
+        paddingHorizontal: '2.5%',
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
-        height: height * 0.1,
+        height: height * 0.115,
         justifyContent: 'space-between',
+        borderRadius: 8,
       }}>
       <View
         style={{
-          height: height * 0.08,
-          width: height * 0.08,
+          height: height * 0.07,
+          width: height * 0.07,
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          borderWidth: 1,
-          borderColor: '#000',
+          borderWidth: 0.5,
+          borderColor: '#c7c7c7',
+          borderRadius: 8,
         }}>
-        <Icon name="bottle-droplet" size={30} color="#000" />
+        <Image
+          source={
+            image.length > 0
+              ? {uri: image}
+              : require('../assets/products_alt.png')
+          }
+          style={{
+            height: height * 0.06,
+            width: height * 0.06,
+          }}
+        />
       </View>
       <View
         style={{
           marginHorizontal: '2.5%',
           display: 'flex',
           flexDirection: 'column',
-          height: '100%',
           width: width * 0.525,
+          height: '70%',
+          marginVertical: '5%',
           justifyContent: 'space-between',
         }}>
-        <View>
-          <Text style={{color: '#c7c7c7', fontSize: 10}}>20,May 2000</Text>
-          <Text style={{color: '#000', fontSize: 18}}>Product Name</Text>
-        </View>
+        <Text style={{color: '#666666', fontSize: 10}}>
+          Expiring on {dayjs(date).format('DD MMM, YYYY')}
+        </Text>
+        <Text style={{color: '#000', fontSize: 18}}>
+          {title.length > 0 ? title : 'Title'}
+        </Text>
         <View
           style={{
             backgroundColor: '#c7c7c777',
@@ -60,25 +90,25 @@ const ProductCard = () => {
               justifyContent: 'center',
               alignItems: 'center',
             }}>
-            {'9876545678'}
+            {productCode.length > 0 ? productCode : 'Product Code'}
           </Text>
         </View>
       </View>
       <View
         style={{
-          width: width * 0.1,
-          backgroundColor: 'red',
-          height: '100%',
+          width: width * 0.125,
+          height: width * 0.125,
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
           flexDirection: 'column',
-          borderWidth: 1,
+          backgroundColor: '#ff7a33',
+          borderRadius: 120,
         }}>
-        <Text style={{color: '#000', fontSize: 16, fontWeight: 'bold'}}>
-          24
+        <Text style={{color: '#fff', fontSize: 14, fontWeight: 'bold'}}>
+          {Math.floor(dayjs(date).diff(dayjs(), 'hours', true) / 24)}
         </Text>
-        <Text style={{color: '#000', fontSize: 12, fontWeight: 'bold'}}>
+        <Text style={{color: '#fff', fontSize: 12, fontWeight: 'bold'}}>
           Days
         </Text>
       </View>
