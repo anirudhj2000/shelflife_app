@@ -7,6 +7,7 @@ import {DrawerScreenProps} from '@react-navigation/drawer';
 export type AppStackParams = {
   Home: undefined;
   Scanner: undefined;
+  NewProduct: {UPCCode: string};
 };
 
 export type AppDrawerParams = {
