@@ -18,6 +18,7 @@ import {AppStackProps} from '../utils/types';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
 const {height, width} = Dimensions.get('window');
+
 const semiTransparent = '#00000088';
 const ScannerSceen = ({navigation}: AppStackProps) => {
   const device = useCameraDevice('back');
@@ -32,7 +33,12 @@ const ScannerSceen = ({navigation}: AppStackProps) => {
     codeTypes: ['qr', 'ean-13'],
     onCodeScanned: codes => {
       console.log(`Scanne${codes.length} codes!`, codes);
-      navigation.goBack();
+      if (codes[0].value) {
+        navigation.navigate('App', {
+          screen: 'NewProduct',
+          params: {UPCCode: codes[0].value},
+        });
+      }
     },
   });
 
@@ -138,6 +144,12 @@ const ScannerSceen = ({navigation}: AppStackProps) => {
             alignItems: 'center',
           }}>
           <TouchableOpacity
+            onPress={() => {
+              navigation.navigate('App', {
+                screen: 'NewProduct',
+                params: {UPCCode: ''},
+              });
+            }}
             style={{
               display: 'flex',
               flexDirection: 'row',
