@@ -5,6 +5,7 @@ import {
   Dimensions,
   TouchableOpacity,
   TextInput,
+  ActivityIndicator,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {AppStackProps} from '../utils/types';
@@ -18,6 +19,7 @@ import ProductCard from '../components/productCard';
 import {useRoute} from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
 import Toast from 'react-native-toast-message';
+import RAPID_KEY from 'react-native-dotenv';
 
 const {height, width} = Dimensions.get('window');
 
@@ -28,7 +30,7 @@ const options = {
     query: '',
   },
   headers: {
-    'X-RapidAPI-Key': '8aafb5a52bmshad7a070fb7df7d1p1c2bd4jsn608b773f7da1',
+    'X-RapidAPI-Key': RAPID_KEY,
     'X-RapidAPI-Host': 'barcodes1.p.rapidapi.com',
   },
 };
@@ -48,6 +50,7 @@ const AddProduct = ({navigation, route}: AppStackProps) => {
   const [productCodeError, setProductCodeError] = useState<boolean>(false);
   const [image, setImage] = useState<string>('');
   const [errorData, setErrorData] = useState<string | null>();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     console.log('route', JSON.stringify(route));
@@ -75,13 +78,6 @@ const AddProduct = ({navigation, route}: AppStackProps) => {
     setProductTitle('');
     setProductCodeError(false);
   };
-
-  useEffect(() => {
-    Toast.show({
-      type: 'info',
-      text1: 'This is an info message',
-    });
-  });
 
   const handleSubmit = () => {
     if (productCode.length == 0) {
@@ -112,7 +108,7 @@ const AddProduct = ({navigation, route}: AppStackProps) => {
     };
 
     if (image.length > 0) {
-      obj[image] = image;
+      obj['image'] = image;
     }
 
     firestore()
@@ -121,14 +117,17 @@ const AddProduct = ({navigation, route}: AppStackProps) => {
       .set(obj)
       .then(() => {
         Toast.show({
-          type: 'info',
-          text1: 'This is an info message',
+          type: 'success',
+          text1: 'Product Added Successfully!x',
+          position: 'bottom',
         });
         console.log('User added!');
+        navigation.goBack();
       });
   };
 
   const getProductInfo = () => {
+    setLoading(true);
     console.log('called');
     options.params.query = productCode;
     try {
@@ -148,17 +147,23 @@ const AddProduct = ({navigation, route}: AppStackProps) => {
           if (res.data.product.title) {
             setProductTitle(res.data.product.title);
           }
+          setLoading(false);
         })
         .catch(err => {
           console.log('err', err);
+          setLoading(false);
         });
     } catch (error) {
       console.error(error);
+      setLoading(false);
     }
   };
 
   return (
     <View style={{height: '100%', backgroundColor: '#fff'}}>
+      <View style={{zIndex: 10}}>
+        <Toast />
+      </View>
       <CommonHeaderWithBack
         title="Add Product"
         onPress={() => {
@@ -224,7 +229,7 @@ const AddProduct = ({navigation, route}: AppStackProps) => {
               : 'Enter the product code for identifying product'}
           </Text>
         </View>
-        {productCode.length > 12 && !productCodeError ? (
+        {productCode.length > 12 && !productCodeError && !loading ? (
           <View
             style={{display: 'flex', flexDirection: 'column', marginTop: '5%'}}>
             <View
@@ -305,6 +310,8 @@ const AddProduct = ({navigation, route}: AppStackProps) => {
               />
             </View>
           </View>
+        ) : loading ? (
+          <ActivityIndicator size="large" style={{marginTop: '10%'}} />
         ) : null}
       </View>
       <View></View>
