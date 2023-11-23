@@ -26,6 +26,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Eye from '../components/eye';
 import LoginForm from '../components/loginForm';
 import SignupModal from '../components/signupModal';
+import useUserStore from '../utils/store';
+import Toast from 'react-native-toast-message';
 
 const {height, width} = Dimensions.get('window');
 export const qrFont = 'LibreBarcode128Text-Regular';
@@ -39,6 +41,8 @@ const Login = ({navigation}: AuthStackProps) => {
   const translateValue = useSharedValue(500);
   const qrCodePos = useSharedValue(-width * 0.25);
   const [showModal, setShowModal] = useState(false);
+
+  const updateUser = useUserStore(state => state.updateUser);
 
   const animatedStyles = useAnimatedStyle(() => ({
     transform: [
@@ -75,9 +79,14 @@ const Login = ({navigation}: AuthStackProps) => {
   const HandleSignIn = () => {
     onGoogleButtonPress()
       .then(res => {
-        Alert.alert('Login Successfull');
+        Toast.show({
+          type: 'success',
+          text1: 'Login Successfull!',
+          position: 'top',
+        });
+        console.log('user l;ogin', res);
         AsyncStorage.setItem('user', JSON.stringify(res));
-        navigation.navigate('App', {screen: 'Home'});
+        updateUser(res);
       })
       .catch(err => {
         console.log('login err', err);
@@ -128,7 +137,7 @@ const Login = ({navigation}: AuthStackProps) => {
             ShelfLife
           </Text>
         </View>
-        {/* <Eye />
+        <Eye />
         <Animated.View style={[{width: width * 0.225}, qrCodeStyles]}>
           <Image
             source={require('../assets/barcode.png')}
@@ -138,7 +147,7 @@ const Login = ({navigation}: AuthStackProps) => {
               width: width * 0.225,
             }}
           />
-        </Animated.View> */}
+        </Animated.View>
       </View>
       <View
         style={{
