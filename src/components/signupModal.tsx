@@ -6,6 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
   Dimensions,
+  KeyboardAvoidingView,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {
@@ -21,6 +22,9 @@ import Animated, {
   runOnJS,
 } from 'react-native-reanimated';
 import {qrFont} from '../screens/login';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
+import Toast from 'react-native-toast-message';
 
 const {height, width} = Dimensions.get('window');
 
@@ -49,6 +53,22 @@ export const validatePassword = (password: string): boolean => {
   return passwordRegex.test(password);
 };
 
+export const checkIfUserExists = (email: string) => {
+  return new Promise<any>((resolve, reject) => {
+    firestore()
+      .collection('User')
+      .doc(email)
+      .get()
+      .then(documentSnapshot => {
+        if (documentSnapshot.exists) {
+          console.log('user exists');
+          resolve(documentSnapshot);
+        } else resolve(false);
+      })
+      .catch(err => reject());
+  });
+};
+
 const SignupModal = ({modalVisible, handleModalClose}: ModalInterface) => {
   const [name, setName] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -56,6 +76,40 @@ const SignupModal = ({modalVisible, handleModalClose}: ModalInterface) => {
   const [passwordConfirm, setPasswordConfirm] = useState<string>('');
   const [usernameError, setUsernameError] = useState<string | null>(null);
   const [passwordError, setPasswordError] = useState<string | null>(null);
+
+  const addUserData = () => {
+    checkIfUserExists(email).then(res => {
+      if (!res) {
+        firestore()
+          .collection('User')
+          .doc(email)
+          .set({
+            email: email,
+            name: name,
+            joinedOn: new Date(),
+          })
+          .then(() => {
+            console.log('user data added');
+            clearData();
+            handleModalClose();
+            Toast.show({
+              position: 'top',
+              type: 'success',
+              text1: 'Signup successfull',
+            });
+          });
+      }
+    });
+  };
+
+  const clearData = () => {
+    setName('');
+    setPassword('');
+    setEmail('');
+    setPasswordConfirm('');
+    setUsernameError(null);
+    setPasswordError(null);
+  };
 
   const onSubmit = () => {
     if (name.length == 0) {
@@ -75,12 +129,43 @@ const SignupModal = ({modalVisible, handleModalClose}: ModalInterface) => {
       return;
     }
 
+    console.log('pass', password, passwordConfirm);
+
     if (password != passwordConfirm) {
       setUsernameError('Please enter matching passwords!');
       return;
     }
 
     setUsernameError(null);
+
+    auth()
+      .createUserWithEmailAndPassword(email, password)
+      .then(() => {
+        console.log('User account created & signed in!');
+        auth().signOut();
+        addUserData();
+      })
+      .catch(error => {
+        if (error.code === 'auth/email-already-in-use') {
+          Toast.show({
+            position: 'top',
+            type: 'info',
+            text1: 'That email address is already in use!',
+          });
+          console.log('That email address is already in use!');
+        }
+
+        if (error.code === 'auth/invalid-email') {
+          Toast.show({
+            position: 'top',
+            type: 'error',
+            text1: 'That email address is invalid!',
+          });
+          console.log('That email address is invalid!');
+        }
+
+        console.error(error);
+      });
   };
 
   const pressed = useSharedValue(false);
@@ -227,35 +312,40 @@ const SignupModal = ({modalVisible, handleModalClose}: ModalInterface) => {
                   />
                   {/* {passwordError && <Text>{passwordError}</Text>} */}
                 </View>
-                <View style={{display: 'flex', flexDirection: 'column'}}>
-                  <Text
-                    style={{
-                      marginHorizontal: 4,
-                      fontSize: 14,
-                      color: '#000',
-                    }}>
-                    Confirm Password
-                  </Text>
-                  <TextInput
-                    placeholder="Confirm Password"
-                    secureTextEntry
-                    onChangeText={text => setPassword(text)}
-                    style={[
-                      styles.textContainer,
-                      {marginBottom: usernameError ? 0 : '5%'},
-                    ]}
-                  />
-                  {usernameError && (
+                <KeyboardAvoidingView
+                  behavior="height"
+                  keyboardVerticalOffset={-100}>
+                  <View style={{display: 'flex', flexDirection: 'column'}}>
                     <Text
                       style={{
-                        color: '#E50000',
-                        fontSize: 12,
-                        marginTop: 8,
+                        marginHorizontal: 4,
+                        fontSize: 14,
+                        color: '#000',
                       }}>
-                      {usernameError}
+                      Confirm Password
                     </Text>
-                  )}
-                </View>
+                    <TextInput
+                      placeholder="Confirm Password"
+                      secureTextEntry
+                      value={passwordConfirm}
+                      onChangeText={text => setPasswordConfirm(text)}
+                      style={[
+                        styles.textContainer,
+                        {marginBottom: usernameError ? 0 : '5%'},
+                      ]}
+                    />
+                    {usernameError && (
+                      <Text
+                        style={{
+                          color: '#E50000',
+                          fontSize: 12,
+                          marginTop: 8,
+                        }}>
+                        {usernameError}
+                      </Text>
+                    )}
+                  </View>
+                </KeyboardAvoidingView>
               </View>
               <TouchableOpacity
                 onPress={() => {
