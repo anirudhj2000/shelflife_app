@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import React from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {AppStackProps, AppDrawerProps} from '../utils/types';
+import {AppStackProps, HomeScreenProps} from '../utils/types';
 import StatsCard from '../components/totalStatsCard';
 import UpcomingCard from '../components/upcomingCard';
 import CategoryCard from '../components/categoryCard';
@@ -17,34 +17,33 @@ import AppHeader from '../components/appHeader';
 
 const {height, width} = Dimensions.get('window');
 
-const Home = ({navigation}: AppDrawerProps) => {
+const Home = ({navigation}: AppStackProps) => {
   return (
-    <View style={{flex: 1, backgroundColor: '#000'}}>
-      <Image
-        style={{
-          height: '100%',
-          width: '100%',
-          position: 'absolute',
-          opacity: 0.7,
-        }}
-        source={require('../assets/appbackground.png')}
-      />
-      <AppHeader navigation={navigation} />
-      <ScrollView style={{height: height}}>
+    <View style={{flex: 1, backgroundColor: '#b6f3fc'}}>
+      <AppHeader />
+      <ScrollView style={{height: height, zIndex: 1}}>
         <View
           style={{
             display: 'flex',
             flexDirection: 'column',
             minHeight: height,
             backgroundColor: '#fff',
-            // borderTopLeftRadius: 32,
-            // borderTopRightRadius: 32,
+            borderTopLeftRadius: 32,
+            borderTopRightRadius: 32,
             marginTop: '20%',
-            borderWidth: 2,
-            borderColor: '#000',
+            paddingTop: '5%',
+            paddingHorizontal: '2.5%',
           }}>
-          <StatsCard total={100} upcoming={30} />
-          <UpcomingCard />
+          <StatsCard
+            total={100}
+            upcoming={30}
+            onPress={() => navigation.navigate('App', {screen: 'Home'})}
+          />
+          <UpcomingCard
+            handleViewProducts={() => {
+              navigation.navigate('App', {screen: 'Products'});
+            }}
+          />
           <CategoryCard />
         </View>
       </ScrollView>
@@ -56,9 +55,10 @@ const Home = ({navigation}: AppDrawerProps) => {
           position: 'absolute',
           width: '100%',
           bottom: 0,
+          zIndex: 2,
         }}>
         <TouchableOpacity
-          onPress={() => navigation.navigate('Scanner')}
+          onPress={() => navigation.navigate('App', {screen: 'Scanner'})}
           style={{
             backgroundColor: '#000',
             display: 'flex',
