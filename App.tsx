@@ -25,9 +25,16 @@ import {
 } from './src/utils/navigation';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import useUserStore from './src/utils/store';
 
 function App(): JSX.Element {
+  let userData = useUserStore(state => state.user);
+  let updateUser = useUserStore(state => state.updateUser);
   const [user, setUser] = React.useState<string | null>(null);
+
+  // const [user, setUser] = React.useState<any>(
+  //   useUserStore(state => state.user),
+  // );
 
   useEffect(() => {
     fetchInfo();
@@ -36,12 +43,14 @@ function App(): JSX.Element {
   const fetchInfo = async () => {
     let data = await AsyncStorage.getItem('user');
     setUser(data);
+    updateUser(data);
+    console.log('user data', data);
   };
 
   return (
     <GestureHandlerRootView style={{flex: 1}}>
       <NavigationContainer>
-        {user ? <AppDrawerNavigator /> : <AuthStackNavigator />}
+        {userData ? <AppDrawerNavigator /> : <AuthStackNavigator />}
       </NavigationContainer>
     </GestureHandlerRootView>
   );
