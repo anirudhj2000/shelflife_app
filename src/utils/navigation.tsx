@@ -5,6 +5,7 @@ import Login from '../screens/login';
 import AddProduct from '../screens/addProduct';
 import {AuthStackParams, AppStackParams, AppDrawerParams} from './types';
 import {createDrawerNavigator} from '@react-navigation/drawer';
+import ProductList from '../screens/productList';
 
 const AppStack = createNativeStackNavigator<AppStackParams>();
 const AppDrawer = createDrawerNavigator<AppDrawerParams>();
@@ -12,9 +13,10 @@ const AppDrawer = createDrawerNavigator<AppDrawerParams>();
 export const AppStackNavigator = () => {
   return (
     <AppStack.Navigator screenOptions={{headerShown: false}}>
-      {/* <AppStack.Screen name="Home" component={Home} /> */}
+      <AppStack.Screen name="Home" component={Home} />
       <AppStack.Screen name="Scanner" component={ScannerSceen} />
       <AppStack.Screen name="NewProduct" component={AddProduct} />
+      <AppStack.Screen name="Products" component={ProductList} />
     </AppStack.Navigator>
   );
 };

@@ -8,6 +8,7 @@ export type AppStackParams = {
   Home: undefined;
   Scanner: undefined;
   NewProduct: {UPCCode: string};
+  Products: undefined;
 };
 
 export type AppDrawerParams = {
