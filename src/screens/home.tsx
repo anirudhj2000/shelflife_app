@@ -21,7 +21,7 @@ const Home = ({navigation}: AppStackProps) => {
   return (
     <View style={{flex: 1, backgroundColor: '#b6f3fc'}}>
       <AppHeader />
-      <ScrollView style={{height: height, zIndex: 1}}>
+      <ScrollView style={{height: height}}>
         <View
           style={{
             display: 'flex',
@@ -30,15 +30,10 @@ const Home = ({navigation}: AppStackProps) => {
             backgroundColor: '#fff',
             borderTopLeftRadius: 32,
             borderTopRightRadius: 32,
-            marginTop: '20%',
             paddingTop: '5%',
             paddingHorizontal: '2.5%',
+            // marginTop: '20%',
           }}>
-          <StatsCard
-            total={100}
-            upcoming={30}
-            onPress={() => navigation.navigate('App', {screen: 'Home'})}
-          />
           <UpcomingCard
             handleViewProducts={() => {
               navigation.navigate('App', {screen: 'Products'});
@@ -55,7 +50,6 @@ const Home = ({navigation}: AppStackProps) => {
           position: 'absolute',
           width: '100%',
           bottom: 0,
-          zIndex: 2,
         }}>
         <TouchableOpacity
           onPress={() => navigation.navigate('App', {screen: 'Scanner'})}
