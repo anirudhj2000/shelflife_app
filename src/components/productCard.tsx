@@ -11,6 +11,7 @@ interface ProductCardInfo {
   productCode: string;
   date: Date;
   image: string;
+  large?: boolean;
 }
 
 const ProductCard = ({
@@ -19,6 +20,7 @@ const ProductCard = ({
   productCode,
   date,
   image,
+  large,
 }: ProductCardInfo) => {
   console.log('date', date);
   return (
@@ -30,7 +32,7 @@ const ProductCard = ({
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
-        height: height * 0.115,
+        height: large ? height * 0.115 : height * 0.1,
         justifyContent: 'space-between',
         borderRadius: 8,
       }}>
@@ -46,11 +48,7 @@ const ProductCard = ({
           borderRadius: 8,
         }}>
         <Image
-          source={
-            image.length > 0
-              ? {uri: image}
-              : require('../assets/products_alt.png')
-          }
+          source={image ? {uri: image} : require('../assets/products_alt.png')}
           style={{
             height: height * 0.06,
             width: height * 0.06,
@@ -70,8 +68,12 @@ const ProductCard = ({
         <Text style={{color: '#666666', fontSize: 10}}>
           Expiring on {dayjs(date).format('DD MMM, YYYY')}
         </Text>
-        <Text style={{color: '#000', fontSize: 18}}>
-          {title.length > 0 ? title : 'Title'}
+        <Text style={{color: '#000', fontSize: large ? 18 : 16}}>
+          {title.length > 0
+            ? title.length > 20
+              ? `${title.slice(0, 20)}...`
+              : title
+            : 'Title'}
         </Text>
         <View
           style={{
@@ -81,7 +83,7 @@ const ProductCard = ({
             alignItems: 'center',
             padding: '1%',
             borderRadius: 4,
-            width: '40%',
+            width: '60%',
           }}>
           <Text
             style={{
@@ -96,8 +98,8 @@ const ProductCard = ({
       </View>
       <View
         style={{
-          width: width * 0.125,
-          height: width * 0.125,
+          width: large ? width * 0.125 : width * 0.1,
+          height: large ? width * 0.125 : width * 0.1,
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
@@ -105,10 +107,10 @@ const ProductCard = ({
           backgroundColor: '#ff7a33',
           borderRadius: 120,
         }}>
-        <Text style={{color: '#fff', fontSize: 14, fontWeight: 'bold'}}>
+        <Text style={{color: '#fff', fontSize: 12, fontWeight: 'bold'}}>
           {Math.floor(dayjs(date).diff(dayjs(), 'hours', true) / 24)}
         </Text>
-        <Text style={{color: '#fff', fontSize: 12, fontWeight: 'bold'}}>
+        <Text style={{color: '#fff', fontSize: 10, fontWeight: 'bold'}}>
           Days
         </Text>
       </View>
