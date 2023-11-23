@@ -19,7 +19,7 @@ import ProductCard from '../components/productCard';
 import {useRoute} from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
 import Toast from 'react-native-toast-message';
-import RAPID_KEY from 'react-native-dotenv';
+import Keys from '../../config';
 
 const {height, width} = Dimensions.get('window');
 
@@ -30,7 +30,7 @@ const options = {
     query: '',
   },
   headers: {
-    'X-RapidAPI-Key': RAPID_KEY,
+    'X-RapidAPI-Key': Keys.Rapid_key,
     'X-RapidAPI-Host': 'barcodes1.p.rapidapi.com',
   },
 };
@@ -105,6 +105,7 @@ const AddProduct = ({navigation, route}: AppStackProps) => {
       title: productTitle,
       category: productCategory,
       expiryDate: date,
+      user: 'anirudh11',
     };
 
     if (image.length > 0) {
