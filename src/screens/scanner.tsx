@@ -103,6 +103,7 @@ const ScannerSceen = ({navigation}: AppStackProps) => {
                 style={{
                   marginHorizontal: '5%',
                   fontSize: 24,
+                  color: '#fff',
                 }}>
                 Scan products
               </Text>

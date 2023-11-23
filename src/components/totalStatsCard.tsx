@@ -5,11 +5,13 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 interface StatusCardInterface {
   total: number;
   upcoming: number;
+  onPress: () => void;
 }
 
-const StatsCard = ({total, upcoming}: StatusCardInterface) => {
+const StatsCard = ({total, upcoming, onPress}: StatusCardInterface) => {
   return (
     <TouchableOpacity
+      onPress={() => onPress()}
       style={{
         width: '95%',
         marginHorizontal: '2.5%',

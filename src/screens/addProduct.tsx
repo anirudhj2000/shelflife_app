@@ -90,7 +90,7 @@ const AddProduct = ({navigation, route}: AppStackProps) => {
       return;
     }
 
-    if (date && dayjs(date) > dayjs(tomorrow)) {
+    if (date && dayjs(date) <= dayjs(tomorrow)) {
       setErrorData('Please Enter Valid Expiry Date!');
       return;
     }
@@ -315,7 +315,9 @@ const AddProduct = ({navigation, route}: AppStackProps) => {
           <ActivityIndicator size="large" style={{marginTop: '10%'}} />
         ) : null}
       </View>
-      <View></View>
+      <View>
+        <Text>{errorData}</Text>
+      </View>
       <View
         style={{
           display: 'flex',

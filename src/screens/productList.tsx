@@ -31,7 +31,7 @@ const ProductList = ({navigation}: AppStackProps) => {
   return (
     <View style={{height: '100%', backgroundColor: '#fff'}}>
       <CommonHeaderWithBack
-        title="Add Product"
+        title="Products"
         onPress={() => {
           navigation.navigate('App', {screen: 'Home'});
         }}
@@ -43,10 +43,11 @@ const ProductList = ({navigation}: AppStackProps) => {
           keyExtractor={(item, index) => index.toString()}
           renderItem={({item, index}) => {
             return (
-              <View style={{marginBottom: '2.5%'}}>
+              <View style={{marginBottom: '2.5%'}} key={index}>
                 <ProductCard
                   title={item.title}
                   image={item.image}
+                  large={true}
                   date={
                     new Date(
                       item.expiryDate.seconds * 1000 +
