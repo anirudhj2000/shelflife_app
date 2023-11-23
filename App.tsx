@@ -26,6 +26,7 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import useUserStore from './src/utils/store';
+import Toast from 'react-native-toast-message';
 
 function App(): JSX.Element {
   let userData = useUserStore(state => state.user);
@@ -52,6 +53,7 @@ function App(): JSX.Element {
       <NavigationContainer>
         {userData ? <AppDrawerNavigator /> : <AuthStackNavigator />}
       </NavigationContainer>
+      <Toast />
     </GestureHandlerRootView>
   );
 }
