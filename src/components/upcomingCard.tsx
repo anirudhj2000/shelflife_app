@@ -12,6 +12,8 @@ import firestore from '@react-native-firebase/firestore';
 import {useNavigation} from '@react-navigation/native';
 import {AppStackProps} from '../utils/types';
 import Icon from 'react-native-vector-icons/AntDesign';
+import useUserStore from '../utils/store';
+import {useIsFocused} from '@react-navigation/native';
 
 const {height, width} = Dimensions.get('window');
 
@@ -20,29 +22,32 @@ interface UpcomingCardInterfcae {
 }
 
 const UpcomingCard = ({handleViewProducts}: UpcomingCardInterfcae) => {
+  const focused = useIsFocused();
+  const user = JSON.parse(useUserStore(state => state.user));
   const navigation = useNavigation<AppStackProps>();
   const [products, setProducts] = useState<Array<any>>([]);
 
   useEffect(() => {
     getProductList();
-  }, []);
+  }, [focused]);
 
   const getProductList = () => {
-    firestore()
-      .collection('Products')
-      .where('user', '==', 'anirudh')
-      .orderBy('expiryDate')
-      .limit(5)
-      .get()
-      .then(query => {
-        let arr: any = [];
+    if (user.email)
+      firestore()
+        .collection('Products')
+        .where('user', '==', user?.email)
+        .orderBy('expiryDate')
+        .limit(5)
+        .get()
+        .then(query => {
+          let arr: any = [];
 
-        console.log('result', query.docs);
-        query.docs.map(item => {
-          arr.push(item.data());
+          console.log('result', query.docs);
+          query.docs.map(item => {
+            arr.push(item.data());
+          });
+          setProducts(arr);
         });
-        setProducts(arr);
-      });
   };
   return (
     <View

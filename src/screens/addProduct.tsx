@@ -20,6 +20,8 @@ import {useRoute} from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
 import Toast from 'react-native-toast-message';
 import Keys from '../../config';
+import useUserStore from '../utils/store';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const {height, width} = Dimensions.get('window');
 
@@ -41,6 +43,8 @@ tomorrow.setDate(tomorrow.getDate() + 1);
 const AddProduct = ({navigation, route}: AppStackProps) => {
   //   const route = useRoute();
   //   const nestedParams = route.params;
+  const user = JSON.parse(useUserStore(state => state.user));
+  const updateUser = useUserStore(state => state.updateUser);
 
   const [productCode, setProductCode] = useState('');
   const [date, setDate] = useState<Date>(tomorrow);
@@ -80,6 +84,11 @@ const AddProduct = ({navigation, route}: AppStackProps) => {
   };
 
   const handleSubmit = () => {
+    if (!user.email) {
+      AsyncStorage.clear();
+      updateUser(null);
+    }
+
     if (productCode.length == 0) {
       setErrorData('Please Enter Product Code!');
       return;
@@ -105,7 +114,7 @@ const AddProduct = ({navigation, route}: AppStackProps) => {
       title: productTitle,
       category: productCategory,
       expiryDate: date,
-      user: 'anirudh11',
+      user: user.email,
     };
 
     if (image.length > 0) {
@@ -119,11 +128,11 @@ const AddProduct = ({navigation, route}: AppStackProps) => {
       .then(() => {
         Toast.show({
           type: 'success',
-          text1: 'Product Added Successfully!x',
-          position: 'bottom',
+          text1: 'Product Added Successfully!',
+          position: 'top',
         });
         console.log('User added!');
-        navigation.goBack();
+        navigation.navigate('App', {screen: 'Products'});
       });
   };
 
@@ -162,9 +171,6 @@ const AddProduct = ({navigation, route}: AppStackProps) => {
 
   return (
     <View style={{height: '100%', backgroundColor: '#fff'}}>
-      <View style={{zIndex: 10}}>
-        <Toast />
-      </View>
       <CommonHeaderWithBack
         title="Add Product"
         onPress={() => {
