@@ -34,12 +34,12 @@ let screens = [
 ];
 
 const AppDrawerComponent = ({navigation}: DrawerContentComponentProps) => {
-  const [user, setUser] = React.useState<any>({});
+  //   const [user, setUser] = React.useState<any>({});
   const updateUser = useUserStore(state => state.updateUser);
-
-  useEffect(() => {
-    fetchInfo();
-  }, []);
+  const user = JSON.parse(useUserStore(state => state.user));
+  //   useEffect(() => {
+  //     fetchInfo();
+  //   }, []);
 
   const handleLogout = () => {
     auth()
@@ -51,12 +51,12 @@ const AppDrawerComponent = ({navigation}: DrawerContentComponentProps) => {
       });
   };
 
-  const fetchInfo = async () => {
-    const userData = await AsyncStorage.getItem('user');
-    if (userData) {
-      setUser(JSON.parse(userData));
-    }
-  };
+  //   const fetchInfo = async () => {
+  //     const userData = await AsyncStorage.getItem('user');
+  //     if (userData) {
+  //       setUser(JSON.parse(userData));
+  //     }
+  //   };
   return (
     <View
       style={{
@@ -84,19 +84,36 @@ const AppDrawerComponent = ({navigation}: DrawerContentComponentProps) => {
             padding: '5%',
             borderRadius: 8,
           }}>
-          <Image
-            style={{
-              height: height * 0.075,
-              width: height * 0.075,
-              borderRadius: height * 0.1,
-            }}
-            source={{uri: user?.user?.photoURL}}
-          />
+          {user.image ? (
+            <Image
+              style={{
+                height: height * 0.075,
+                width: height * 0.075,
+                borderRadius: height * 0.1,
+              }}
+              source={{uri: user.image}}
+            />
+          ) : (
+            <View
+              style={{
+                height: height * 0.075,
+                width: height * 0.075,
+                borderRadius: height * 0.1,
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                backgroundColor: '#556565',
+              }}>
+              <Text style={{fontSize: 24, color: '#fff'}}>
+                {user?.name?.length > 0 ? user.name[0] : '0'}
+              </Text>
+            </View>
+          )}
           <Text style={{fontSize: 16, color: '#000', marginTop: '5%'}}>
-            {user?.user?.displayName}
+            {user?.name}
           </Text>
           <Text style={{fontSize: 12, color: '#000', marginTop: '2.5%'}}>
-            {user?.user?.email}
+            {user?.email}
           </Text>
         </View>
         <View
