@@ -20,6 +20,8 @@ export type AuthStackParams = {
   App: NavigatorScreenParams<AppStackParams>;
 };
 
+export type DrawerStackProps = DrawerScreenProps<AppStackParams>;
+
 export type AuthStackProps = NativeStackScreenProps<AuthStackParams>;
 export type AppStackProps = NativeStackScreenProps<AppDrawerParams>;
 

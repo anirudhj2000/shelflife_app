@@ -6,6 +6,7 @@ import AddProduct from '../screens/addProduct';
 import {AuthStackParams, AppStackParams, AppDrawerParams} from './types';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import ProductList from '../screens/productList';
+import AppDrawerComponent from '../components/appDrawer';
 
 const AppStack = createNativeStackNavigator<AppStackParams>();
 const AppDrawer = createDrawerNavigator<AppDrawerParams>();
@@ -23,7 +24,9 @@ export const AppStackNavigator = () => {
 
 export const AppDrawerNavigator = () => {
   return (
-    <AppDrawer.Navigator screenOptions={{headerShown: false}}>
+    <AppDrawer.Navigator
+      drawerContent={props => <AppDrawerComponent {...props} />}
+      screenOptions={{headerShown: false}}>
       <AppDrawer.Screen name="App" component={AppStackNavigator} />
     </AppDrawer.Navigator>
   );
@@ -33,8 +36,7 @@ const AuthStack = createNativeStackNavigator<AuthStackParams>();
 export const AuthStackNavigator = () => {
   return (
     <AuthStack.Navigator screenOptions={{headerShown: false}}>
-      {/* <AuthStack.Screen name="Login" component={Login} /> */}
-      <AuthStack.Screen name="App" component={AppStackNavigator} />
+      <AuthStack.Screen name="Login" component={Login} />
     </AuthStack.Navigator>
   );
 };
