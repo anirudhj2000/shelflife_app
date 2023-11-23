@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {View, TouchableOpacity, Text, Dimensions} from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import {useIsFocused} from '@react-navigation/native';
+import useUserStore from '../utils/store';
 
 const {height, width} = Dimensions.get('window');
 
@@ -16,6 +17,8 @@ function getRandomColor() {
 
 const CategoryCard = () => {
   const focused = useIsFocused();
+  const user = JSON.parse(useUserStore(state => state.user));
+  const updateUser = useUserStore(state => state.updateUser);
   const [category, setCategory] = useState<Array<any>>([]);
   const [max, setMax] = useState(0);
 
@@ -24,41 +27,44 @@ const CategoryCard = () => {
   }, [focused]);
 
   const getProductList = () => {
-    firestore()
-      .collection('Products')
-      .get()
-      .then(query => {
-        let arr: any = [];
+    console.log('category card', user.email);
+    if (user.email)
+      firestore()
+        .collection('Products')
+        .where('user', '==', user.email)
+        .get()
+        .then(query => {
+          let arr: any = [];
 
-        console.log('result', query.docs);
-        query.docs.map(item => {
-          arr.push(item.data());
+          console.log('result', query.docs);
+          query.docs.map(item => {
+            arr.push(item.data());
+          });
+
+          const categoryCounts: any = {};
+          arr.forEach((item: {category: string | number}) => {
+            if (categoryCounts[item.category]) {
+              categoryCounts[item.category]++;
+            } else {
+              categoryCounts[item.category] = 1;
+            }
+          });
+          const categoryArray = Object.keys(categoryCounts).map(category => ({
+            name: category,
+            count: categoryCounts[category],
+          }));
+
+          let maxVal = 0;
+          categoryArray.map(item => {
+            maxVal = Math.max(maxVal, item.count);
+          });
+
+          setMax(maxVal);
+
+          categoryArray.sort((a, b) => b.count - a.count);
+          const top3Categories = categoryArray.slice(0, 3);
+          setCategory(top3Categories);
         });
-
-        const categoryCounts: any = {};
-        arr.forEach((item: {category: string | number}) => {
-          if (categoryCounts[item.category]) {
-            categoryCounts[item.category]++;
-          } else {
-            categoryCounts[item.category] = 1;
-          }
-        });
-        const categoryArray = Object.keys(categoryCounts).map(category => ({
-          name: category,
-          count: categoryCounts[category],
-        }));
-
-        let maxVal = 0;
-        categoryArray.map(item => {
-          maxVal = Math.max(maxVal, item.count);
-        });
-
-        setMax(maxVal);
-
-        categoryArray.sort((a, b) => b.count - a.count);
-        const top3Categories = categoryArray.slice(0, 3);
-        setCategory(top3Categories);
-      });
   };
 
   if (category.length == 0) {
@@ -134,7 +140,7 @@ const CategoryCard = () => {
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}>
-                <Text>{item.count}</Text>
+                <Text style={{color: '#000', fontSize: 14}}>{item.count}</Text>
               </View>
             </View>
           );
