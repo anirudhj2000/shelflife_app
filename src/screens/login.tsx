@@ -28,6 +28,8 @@ import LoginForm from '../components/loginForm';
 import SignupModal from '../components/signupModal';
 import useUserStore from '../utils/store';
 import Toast from 'react-native-toast-message';
+import {checkIfUserExists} from '../components/signupModal';
+import firestore from '@react-native-firebase/firestore';
 
 const {height, width} = Dimensions.get('window');
 export const qrFont = 'LibreBarcode128Text-Regular';
@@ -76,9 +78,71 @@ const Login = ({navigation}: AuthStackProps) => {
     );
   }, []);
 
+  const AddUserData = (data: any) => {
+    firestore()
+      .collection('User')
+      .doc(data.user.email)
+      .set({
+        email: data.user.email,
+        image: data.user.photoURL,
+        name: data.user.displayName,
+        joinedOn: new Date(),
+      })
+      .then(() => {
+        Toast.show({
+          type: 'success',
+          text1: 'Login Successfull!',
+          position: 'top',
+        });
+        console.log('user l;ogin called');
+        AsyncStorage.setItem(
+          'user',
+          JSON.stringify({
+            email: data.user.email,
+            image: data.user.photoURL,
+            name: data.user.displayName,
+          }),
+        );
+        updateUser({
+          email: data.user.email,
+          image: data.user.photoURL,
+          name: data.user.displayName,
+        });
+      });
+  };
+
   const HandleSignIn = () => {
     onGoogleButtonPress()
       .then(res => {
+        if (res?.user?.email) {
+          checkIfUserExists(res?.user?.email)
+            .then(exists => {
+              if (!exists) {
+                AddUserData(res);
+              } else {
+                Toast.show({
+                  type: 'success',
+                  text1: 'Login Successfull!',
+                  position: 'top',
+                });
+                console.log('user l;ogin', JSON.stringify(res));
+                AsyncStorage.setItem('user', exists.data());
+                updateUser(res);
+              }
+            })
+            .catch(err => {
+              console.log('erererer', err);
+              auth().signOut();
+              updateUser(null);
+              AsyncStorage.clear();
+              Toast.show({
+                type: 'error',
+                text1: 'Some error has occurred!',
+                position: 'top',
+              });
+            });
+        }
+
         Toast.show({
           type: 'success',
           text1: 'Login Successfull!',
@@ -90,6 +154,13 @@ const Login = ({navigation}: AuthStackProps) => {
       })
       .catch(err => {
         console.log('login err', err);
+        auth().signOut();
+        Toast.show({
+          type: 'error',
+          text1: 'Some error has occurred!',
+          position: 'top',
+        });
+        updateUser(null);
         AsyncStorage.clear();
       });
   };

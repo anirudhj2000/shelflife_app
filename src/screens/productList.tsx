@@ -4,28 +4,34 @@ import CommonHeaderWithBack from '../components/commonHeader';
 import {AppStackProps} from '../utils/types';
 import firestore from '@react-native-firebase/firestore';
 import ProductCard from '../components/productCard';
+import useUserStore from '../utils/store';
+import {useIsFocused} from '@react-navigation/native';
 
 const {height, width} = Dimensions.get('window');
 const ProductList = ({navigation}: AppStackProps) => {
+  const focused = useIsFocused();
   const [products, setProducts] = useState<Array<any>>([]);
+  const user = JSON.parse(useUserStore(state => state.user));
+  const updateUser = useUserStore(state => state.updateUser);
 
   useEffect(() => {
     getProductList();
-  }, []);
+  }, [focused]);
 
   const getProductList = () => {
-    firestore()
-      .collection('Products')
-      .where('user', '==', 'anirudh')
-      .get()
-      .then(query => {
-        let arr: any = [];
-        console.log('result', query.docs);
-        query.docs.map(item => {
-          arr.push(item.data());
+    if (user.email)
+      firestore()
+        .collection('Products')
+        .where('user', '==', user.email)
+        .get()
+        .then(query => {
+          let arr: any = [];
+          console.log('result', query.docs);
+          query.docs.map(item => {
+            arr.push(item.data());
+          });
+          setProducts(arr);
         });
-        setProducts(arr);
-      });
   };
 
   return (
