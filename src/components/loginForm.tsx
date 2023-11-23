@@ -9,7 +9,13 @@ import {
 } from 'react-native';
 import React, {useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
-import {AuthStackProps} from '../utils/types';
+import {AppStackProps, AuthStackProps} from '../utils/types';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
+import Toast from 'react-native-toast-message';
+import {checkIfUserExists} from './signupModal';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import useUserStore from '../utils/store';
 
 interface LoginFormInterface {
   onPressSignup: () => void;
@@ -17,7 +23,8 @@ interface LoginFormInterface {
 
 const LoginForm = ({onPressSignup}: LoginFormInterface) => {
   // need to figure out type for the useNavigation
-  const navigation = useNavigation<any>();
+  const navigation = useNavigation<AppStackProps>();
+  const updateUser = useUserStore(state => state.updateUser);
 
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -44,7 +51,29 @@ const LoginForm = ({onPressSignup}: LoginFormInterface) => {
     }
 
     if (isValid) {
-      console.log(`Username: ${username}, Password: ${password}`);
+      auth()
+        .signInWithEmailAndPassword(username, password)
+        .then(res => {
+          checkIfUserExists(username).then(exists => {
+            if (exists) {
+              AsyncStorage.setItem('user', JSON.stringify(exists.data()));
+              updateUser(exists.data());
+              Toast.show({
+                position: 'top',
+                type: 'success',
+                text1: 'Logged in Successfully!',
+              });
+            }
+          });
+        })
+        .catch(err => {
+          console.log(':err', err);
+          Toast.show({
+            position: 'top',
+            type: 'error',
+            text1: 'Some error has occurred!',
+          });
+        });
     }
   };
 
