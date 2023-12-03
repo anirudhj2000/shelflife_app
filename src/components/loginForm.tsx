@@ -182,5 +182,6 @@ const styles = StyleSheet.create({
     borderColor: '#c7c7c7',
     borderRadius: 8,
     paddingHorizontal: 8,
+    color: '#000',
   },
 });

@@ -187,7 +187,7 @@ const SignupModal = ({modalVisible, handleModalClose}: ModalInterface) => {
       pressed.value = false;
       if (event.translationY > 200) {
         runOnJS(handleModalClose)();
-        offset.value = height * 0.6;
+        offset.value = 0;
       }
     });
 
