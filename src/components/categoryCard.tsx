@@ -17,7 +17,8 @@ function getRandomColor() {
 
 const CategoryCard = () => {
   const focused = useIsFocused();
-  const user = JSON.parse(useUserStore(state => state.user));
+  const user = useUserStore(state => state.user);
+  console.log('user', user.email);
   const updateUser = useUserStore(state => state.updateUser);
   const [category, setCategory] = useState<Array<any>>([]);
   const [max, setMax] = useState(0);

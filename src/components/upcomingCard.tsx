@@ -23,7 +23,8 @@ interface UpcomingCardInterfcae {
 
 const UpcomingCard = ({handleViewProducts}: UpcomingCardInterfcae) => {
   const focused = useIsFocused();
-  const user = JSON.parse(useUserStore(state => state.user));
+  const user = useUserStore(state => state.user);
+  console.log('user', typeof user);
   const navigation = useNavigation<AppStackProps>();
   const [products, setProducts] = useState<Array<any>>([]);
 
