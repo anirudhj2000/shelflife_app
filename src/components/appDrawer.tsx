@@ -36,7 +36,8 @@ let screens = [
 const AppDrawerComponent = ({navigation}: DrawerContentComponentProps) => {
   //   const [user, setUser] = React.useState<any>({});
   const updateUser = useUserStore(state => state.updateUser);
-  const user = JSON.parse(useUserStore(state => state.user));
+  const user = useUserStore(state => state.user);
+  console.log('user', user.email);
   //   useEffect(() => {
   //     fetchInfo();
   //   }, []);
