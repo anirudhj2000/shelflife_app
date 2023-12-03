@@ -1,4 +1,11 @@
-import {StyleSheet, Text, View, Dimensions, FlatList} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Dimensions,
+  FlatList,
+  BackHandler,
+} from 'react-native';
 import React, {useState, useEffect} from 'react';
 import CommonHeaderWithBack from '../components/commonHeader';
 import {AppStackProps} from '../utils/types';
@@ -17,6 +24,20 @@ const ProductList = ({navigation}: AppStackProps) => {
   useEffect(() => {
     getProductList();
   }, [focused]);
+
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+
+    return () => backHandler.remove();
+  }, []);
+
+  const backAction = () => {
+    navigation.navigate('App', {screen: 'Home'});
+    return true;
+  };
 
   const getProductList = () => {
     if (user.email)

@@ -6,6 +6,8 @@ import {
   TouchableOpacity,
   TextInput,
   ActivityIndicator,
+  BackHandler,
+  KeyboardAvoidingView,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {AppStackProps} from '../utils/types';
@@ -43,7 +45,7 @@ tomorrow.setDate(tomorrow.getDate() + 1);
 const AddProduct = ({navigation, route}: AppStackProps) => {
   //   const route = useRoute();
   //   const nestedParams = route.params;
-  const user = JSON.parse(useUserStore(state => state.user));
+  const user = useUserStore(state => state.user);
   const updateUser = useUserStore(state => state.updateUser);
 
   const [productCode, setProductCode] = useState('');
@@ -53,7 +55,6 @@ const AddProduct = ({navigation, route}: AppStackProps) => {
   const [productCategory, setProductCategory] = useState<string>('');
   const [productCodeError, setProductCodeError] = useState<boolean>(false);
   const [image, setImage] = useState<string>('');
-  const [errorData, setErrorData] = useState<string | null>();
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -64,6 +65,20 @@ const AddProduct = ({navigation, route}: AppStackProps) => {
       setProductCode(obj.UPCCode);
     }
   }, [route.params]);
+
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+
+    return () => backHandler.remove();
+  }, []);
+
+  const backAction = () => {
+    navigation.navigate('App', {screen: 'Home'});
+    return true;
+  };
 
   useEffect(() => {
     console.log('productCode', productCode);
@@ -84,28 +99,46 @@ const AddProduct = ({navigation, route}: AppStackProps) => {
   };
 
   const handleSubmit = () => {
+    console.log('user', user.email);
+
     if (!user.email) {
       AsyncStorage.clear();
       updateUser(null);
+      navigation.reset({
+        index: 0,
+        routes: [{name: 'App'}],
+      });
     }
 
     if (productCode.length == 0) {
-      setErrorData('Please Enter Product Code!');
+      Toast.show({
+        type: 'error',
+        text1: 'Please Enter Product Code!',
+      });
       return;
     }
 
     if (productCategory.length == 0) {
-      setErrorData('Please Enter Product Category!');
+      Toast.show({
+        type: 'error',
+        text1: 'Please Enter Product Category!',
+      });
       return;
     }
 
     if (date && dayjs(date) <= dayjs(tomorrow)) {
-      setErrorData('Please Enter Valid Expiry Date!');
+      Toast.show({
+        type: 'error',
+        text1: 'Please Enter Valid Expiry Date!',
+      });
       return;
     }
 
     if (productTitle.length == 0) {
-      setErrorData('Please Enter Product Title!');
+      Toast.show({
+        type: 'error',
+        text1: 'Please Enter Product Title!',
+      });
       return;
     }
 
@@ -178,195 +211,210 @@ const AddProduct = ({navigation, route}: AppStackProps) => {
           handleDataClear();
         }}
       />
-      {productCode.length > 12 && !productCodeError ? (
+
+      <KeyboardAvoidingView
+        style={{height: height * 0.875}}
+        behavior={'padding'}
+        keyboardVerticalOffset={200}>
+        {productCode.length > 12 && !productCodeError ? (
+          <View
+            style={{
+              display: 'flex',
+              width: '95%',
+              marginHorizontal: '2.5%',
+              marginBottom: '5%',
+              flexDirection: 'column',
+            }}>
+            <Text style={{color: '#000', marginBottom: 8, fontStyle: 'italic'}}>
+              Preview..
+            </Text>
+            <ProductCard
+              title={
+                productTitle.length > 0
+                  ? `${productTitle.slice(0, 25)}...`
+                  : productTitle
+              }
+              productCode={productCode}
+              date={date}
+              onPress={() => {}}
+              image={image}
+            />
+          </View>
+        ) : null}
         <View
           style={{
             display: 'flex',
             width: '95%',
             marginHorizontal: '2.5%',
-            marginBottom: '5%',
-            flexDirection: 'column',
           }}>
-          <Text style={{color: '#000', marginBottom: 8, fontStyle: 'italic'}}>
-            Preview..
-          </Text>
-          <ProductCard
-            title={
-              productTitle.length > 0
-                ? `${productTitle.slice(0, 25)}...`
-                : productTitle
-            }
-            productCode={productCode}
-            date={date}
-            onPress={() => {}}
-            image={image}
-          />
-        </View>
-      ) : null}
-      <View
-        style={{
-          display: 'flex',
-          width: '95%',
-          marginHorizontal: '2.5%',
-        }}>
-        <View style={{display: 'flex', flexDirection: 'column'}}>
-          <FormLabel title="UPC/EAN Code" requried={true} fontSize={14} />
-          <View>
-            <TextInput
-              value={productCode}
-              placeholder="Product Code"
-              placeholderTextColor={'#666666'}
+          <View style={{display: 'flex', flexDirection: 'column'}}>
+            <FormLabel title="UPC/EAN Code" requried={true} fontSize={14} />
+            <View>
+              <TextInput
+                value={productCode}
+                placeholder="Product Code"
+                placeholderTextColor={'#666666'}
+                style={{
+                  borderWidth: 1,
+                  borderRadius: 8,
+                  paddingHorizontal: 8,
+                  borderColor: '#666666',
+                  marginTop: 8,
+                  color: '#000',
+                }}
+                onChangeText={val => {
+                  setProductCode(val);
+                }}
+              />
+            </View>
+            <Text
               style={{
-                borderWidth: 1,
-                borderRadius: 8,
-                paddingHorizontal: 8,
-                borderColor: '#666666',
-                marginTop: 8,
-                color: '#000',
-              }}
-              onChangeText={val => {
-                setProductCode(val);
-              }}
-            />
+                fontSize: 12,
+                color: productCodeError ? 'red' : '#666666',
+              }}>
+              {productCodeError
+                ? 'Please Enter Valid Product Code'
+                : 'Enter the product code for identifying product'}
+            </Text>
           </View>
-          <Text
-            style={{fontSize: 12, color: productCodeError ? 'red' : '#666666'}}>
-            {productCodeError
-              ? 'Please Enter Valid Product Code'
-              : 'Enter the product code for identifying product'}
-          </Text>
-        </View>
-        {productCode.length > 12 && !productCodeError && !loading ? (
-          <View
-            style={{display: 'flex', flexDirection: 'column', marginTop: '5%'}}>
+          {productCode.length > 12 && !productCodeError && !loading ? (
             <View
               style={{
                 display: 'flex',
                 flexDirection: 'column',
-                marginBottom: '2.5%',
+                marginTop: '5%',
               }}>
-              <FormLabel title="Expiry Date" requried={true} fontSize={14} />
-              <TouchableOpacity
-                onPress={() => {
-                  setOpen(true);
-                }}
+              <View
                 style={{
                   display: 'flex',
-                  flexDirection: 'row',
-                  padding: '4%',
-                  borderWidth: 1,
-                  borderRadius: 8,
-                  borderColor: '#666666',
-                  marginTop: 8,
+                  flexDirection: 'column',
+                  marginBottom: '2.5%',
                 }}>
-                <Text style={{color: '#000'}}>
-                  {dayjs(date).format('DD MMM, YYYY')}
-                </Text>
-              </TouchableOpacity>
-            </View>
-            <View
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                marginBottom: '2.5%',
-              }}>
-              <FormLabel title="Product Title" requried={true} fontSize={14} />
-              <TextInput
-                value={productTitle}
-                placeholder="Prouduct Title"
-                placeholderTextColor={'#666666'}
+                <FormLabel title="Expiry Date" requried={true} fontSize={14} />
+                <TouchableOpacity
+                  onPress={() => {
+                    setOpen(true);
+                  }}
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    padding: '4%',
+                    borderWidth: 1,
+                    borderRadius: 8,
+                    borderColor: '#666666',
+                    marginTop: 8,
+                  }}>
+                  <Text style={{color: '#000'}}>
+                    {dayjs(date).format('DD MMM, YYYY')}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              <View
                 style={{
-                  borderWidth: 1,
-                  borderRadius: 8,
-                  paddingHorizontal: 8,
-                  borderColor: '#666666',
-                  marginTop: 8,
-                  color: '#000',
-                }}
-                onChangeText={val => {
-                  setProductTitle(val);
-                }}
-              />
-            </View>
-            <View
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                marginBottom: '2.5%',
-              }}>
-              <FormLabel
-                title="Product Category"
-                requried={true}
-                fontSize={14}
-              />
-              <TextInput
-                value={productCategory}
-                placeholder="Prouduct Category"
-                placeholderTextColor={'#666666'}
+                  display: 'flex',
+                  flexDirection: 'column',
+                  marginBottom: '2.5%',
+                }}>
+                <FormLabel
+                  title="Product Title"
+                  requried={true}
+                  fontSize={14}
+                />
+                <TextInput
+                  value={productTitle}
+                  placeholder="Prouduct Title"
+                  placeholderTextColor={'#666666'}
+                  style={{
+                    borderWidth: 1,
+                    borderRadius: 8,
+                    paddingHorizontal: 8,
+                    borderColor: '#666666',
+                    marginTop: 8,
+                    color: '#000',
+                  }}
+                  onChangeText={val => {
+                    setProductTitle(val);
+                  }}
+                />
+              </View>
+              <View
                 style={{
-                  borderWidth: 1,
-                  borderRadius: 8,
-                  paddingHorizontal: 8,
-                  borderColor: '#666666',
-                  marginTop: 8,
-                  color: '#000',
-                }}
-                onChangeText={val => {
-                  setProductCategory(val);
-                }}
-              />
+                  display: 'flex',
+                  flexDirection: 'column',
+                  marginBottom: '2.5%',
+                }}>
+                <FormLabel
+                  title="Product Category"
+                  requried={true}
+                  fontSize={14}
+                />
+                <TextInput
+                  value={productCategory}
+                  placeholder="Prouduct Category"
+                  placeholderTextColor={'#666666'}
+                  style={{
+                    borderWidth: 1,
+                    borderRadius: 8,
+                    paddingHorizontal: 8,
+                    borderColor: '#666666',
+                    marginTop: 8,
+                    color: '#000',
+                  }}
+                  onChangeText={val => {
+                    setProductCategory(val);
+                  }}
+                />
+              </View>
             </View>
+          ) : loading ? (
+            <ActivityIndicator size="large" style={{marginTop: '10%'}} />
+          ) : null}
+        </View>
+        {productCode.length > 12 && !productCodeError ? (
+          <View
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              width: '95%',
+              marginHorizontal: '2.5%',
+              justifyContent: 'space-between',
+              backgroundColor: '#fff',
+              marginTop: '2.5%',
+            }}>
+            <TouchableOpacity
+              onPress={() => {
+                handleDataClear();
+              }}
+              style={[
+                styles.genericViewStyle,
+                {
+                  width: '47.5%',
+                  borderWidth: 1,
+                  padding: '3%',
+                  borderRadius: 8,
+                },
+              ]}>
+              <Text style={{color: '#000'}}>Clear</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                handleSubmit();
+              }}
+              style={[
+                styles.genericViewStyle,
+                {
+                  width: '47.5%',
+                  borderWidth: 1,
+                  padding: '3%',
+                  borderRadius: 8,
+                  backgroundColor: '#000',
+                },
+              ]}>
+              <Text style={{color: '#fff'}}>Submit</Text>
+            </TouchableOpacity>
           </View>
-        ) : loading ? (
-          <ActivityIndicator size="large" style={{marginTop: '10%'}} />
         ) : null}
-      </View>
-      <View>
-        <Text>{errorData}</Text>
-      </View>
-      <View
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          width: '95%',
-          marginHorizontal: '2.5%',
-          position: 'absolute',
-          justifyContent: 'space-between',
-          bottom: 16,
-          backgroundColor: '#fff',
-        }}>
-        <TouchableOpacity
-          onPress={() => {
-            handleDataClear();
-          }}
-          style={[
-            styles.genericViewStyle,
-            {
-              width: '47.5%',
-              borderWidth: 1,
-              padding: '3%',
-              borderRadius: 8,
-            },
-          ]}>
-          <Text style={{color: '#000'}}>Clear</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => {
-            handleSubmit();
-          }}
-          style={[
-            styles.genericViewStyle,
-            {
-              width: '47.5%',
-              borderWidth: 1,
-              padding: '3%',
-              borderRadius: 8,
-              backgroundColor: '#000',
-            },
-          ]}>
-          <Text style={{color: '#fff'}}>Submit</Text>
-        </TouchableOpacity>
-      </View>
+      </KeyboardAvoidingView>
       <DatePicker
         modal
         open={open}

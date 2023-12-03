@@ -125,9 +125,27 @@ const Login = ({navigation}: AuthStackProps) => {
                   text1: 'Login Successfull!',
                   position: 'top',
                 });
-                console.log('user l;ogin', JSON.stringify(res));
-                AsyncStorage.setItem('user', exists.data());
-                updateUser(res);
+                console.log(
+                  'user l;ogin 1',
+                  JSON.stringify({
+                    email: res.user.email,
+                    image: res.user.photoURL,
+                    name: res.user.displayName,
+                  }),
+                );
+                AsyncStorage.setItem(
+                  'user',
+                  JSON.stringify({
+                    email: res.user.email,
+                    image: res.user.photoURL,
+                    name: res.user.displayName,
+                  }),
+                );
+                updateUser({
+                  email: res.user.email,
+                  image: res.user.photoURL,
+                  name: res.user.displayName,
+                });
               }
             })
             .catch(err => {
@@ -148,7 +166,7 @@ const Login = ({navigation}: AuthStackProps) => {
           text1: 'Login Successfull!',
           position: 'top',
         });
-        console.log('user l;ogin', res);
+        console.log('user l;ogin 2', res);
         AsyncStorage.setItem('user', JSON.stringify(res));
         updateUser(res);
       })
@@ -208,7 +226,7 @@ const Login = ({navigation}: AuthStackProps) => {
             ShelfLife
           </Text>
         </View>
-        <Eye />
+        {/* <Eye />
         <Animated.View style={[{width: width * 0.225}, qrCodeStyles]}>
           <Image
             source={require('../assets/barcode.png')}
@@ -218,7 +236,7 @@ const Login = ({navigation}: AuthStackProps) => {
               width: width * 0.225,
             }}
           />
-        </Animated.View>
+        </Animated.View> */}
       </View>
       <View
         style={{
