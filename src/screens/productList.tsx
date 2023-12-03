@@ -11,7 +11,7 @@ const {height, width} = Dimensions.get('window');
 const ProductList = ({navigation}: AppStackProps) => {
   const focused = useIsFocused();
   const [products, setProducts] = useState<Array<any>>([]);
-  const user = JSON.parse(useUserStore(state => state.user));
+  const user = useUserStore(state => state.user);
   const updateUser = useUserStore(state => state.updateUser);
 
   useEffect(() => {
