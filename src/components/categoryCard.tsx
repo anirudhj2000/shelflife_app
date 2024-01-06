@@ -69,7 +69,7 @@ const CategoryCard = () => {
   };
 
   if (category.length == 0) {
-    return;
+    return <></>;
   }
 
   return (

@@ -1,13 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable react-native/no-inline-styles */
 import React, {useEffect, useState} from 'react';
-import {
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-  Dimensions,
-  Alert,
-  Linking,
-} from 'react-native';
+import {View, Text, Image, TouchableOpacity, Dimensions} from 'react-native';
 import {AuthStackProps} from '../utils/types';
 import Animated, {
   useSharedValue,
@@ -17,10 +12,7 @@ import Animated, {
   withRepeat,
   Easing,
 } from 'react-native-reanimated';
-import {
-  GoogleSignin,
-  GoogleSigninButton,
-} from '@react-native-google-signin/google-signin';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import auth from '@react-native-firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Eye from '../components/eye';
@@ -161,14 +153,14 @@ const Login = ({navigation}: AuthStackProps) => {
             });
         }
 
-        Toast.show({
-          type: 'success',
-          text1: 'Login Successfull!',
-          position: 'top',
-        });
-        console.log('user l;ogin 2', res);
-        AsyncStorage.setItem('user', JSON.stringify(res));
-        updateUser(res);
+        // Toast.show({
+        //   type: 'success',
+        //   text1: 'Login Successfull!',
+        //   position: 'top',
+        // });
+        // console.log('user l;ogin 2', res);
+        // AsyncStorage.setItem('user', JSON.stringify(res));
+        // updateUser(res);
       })
       .catch(err => {
         console.log('login err', err);
@@ -317,6 +309,7 @@ const Login = ({navigation}: AuthStackProps) => {
                   fontSize: 12,
                   fontWeight: 'bold',
                   marginVertical: '2.5%',
+                  color:'#000'
                 }}>
                 OR
               </Text>

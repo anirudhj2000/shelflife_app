@@ -26,7 +26,7 @@ const ScannerSceen = ({navigation}: AppStackProps) => {
   const {hasPermission, requestPermission} = useCameraPermission();
 
   if (device == null) {
-    return;
+    return <></>;
   }
 
   const codeScanner = useCodeScanner({
