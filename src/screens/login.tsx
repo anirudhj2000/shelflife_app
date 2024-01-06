@@ -226,7 +226,7 @@ const Login = ({navigation}: AuthStackProps) => {
             ShelfLife
           </Text>
         </View>
-        {/* <Eye />
+        <Eye />
         <Animated.View style={[{width: width * 0.225}, qrCodeStyles]}>
           <Image
             source={require('../assets/barcode.png')}
@@ -236,7 +236,7 @@ const Login = ({navigation}: AuthStackProps) => {
               width: width * 0.225,
             }}
           />
-        </Animated.View> */}
+        </Animated.View>
       </View>
       <View
         style={{

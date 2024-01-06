@@ -162,12 +162,22 @@ const LoginForm = ({onPressSignup}: LoginFormInterface) => {
             Terms and Conditions
           </Text>
         </TouchableOpacity>
-        {/* <Text style={{color: '#000'}}> and </Text>
-        <TouchableOpacity onPress={() => Linking.canOpenURL('')}>
+        <Text style={{color: '#000'}}> and </Text>
+        <TouchableOpacity
+          onPress={() =>
+            Linking.canOpenURL(
+              'https://www.termsfeed.com/live/0259560d-f1d3-45b3-b333-1c0baf313857',
+            ).then(supports => {
+              if (supports)
+                Linking.openURL(
+                  'https://www.termsfeed.com/live/0259560d-f1d3-45b3-b333-1c0baf313857',
+                );
+            })
+          }>
           <Text style={{textDecorationLine: 'underline', color: '#000'}}>
             Privacy Policy
           </Text>
-        </TouchableOpacity> */}
+        </TouchableOpacity>
       </View>
     </View>
   );
