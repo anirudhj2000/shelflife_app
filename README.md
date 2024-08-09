@@ -2,7 +2,7 @@
 
 ShelfLife is the must-have app for anyone who wants to stay organized and avoid the hassle of expired products. This intuitive and user-friendly app is designed to help you keep track of the expiry dates of all your household items, from groceries to medications.
 
-
+<img width="1191" alt="Screenshot 2024-03-13 at 9 47 25 AM" src="https://github.com/user-attachments/assets/accc0f2a-f155-4ca0-9202-f32329809666">
 
 This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
